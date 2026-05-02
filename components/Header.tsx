@@ -1,63 +1,46 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { siteConfig, caseyConfig } from '@/lib/config';
 import { serviceCategories, getServicesByCategory } from '@/lib/services';
+import { locations } from '@/lib/locations';
 
-// Show up to 4 services per category in the dropdown
 const getDropdownServices = (categorySlug: string) =>
   getServicesByCategory(categorySlug).slice(0, 4);
 
-const popularLocations = [
-  // TODO: Replace with your top service areas
-  { name: 'Example City', slug: 'example-city' },
-];
+const popularLocations = locations.slice(0, 4);
 
 export function Header() {
   return (
-    <header>
-      {/* Utility bar */}
-      <div className="bg-brand-800 py-1.5">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 text-xs text-brand-200">
-          <span>{siteConfig.operatingHours?.weekday} | {siteConfig.operatingHours?.weekend}</span>
-          <a href={caseyConfig.phoneHref} className="font-medium text-white hover:text-accent-500">
-            {caseyConfig.phone}
-          </a>
-        </div>
-      </div>
-      {/* Main nav */}
-      <div className="bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-40 border-b border-neutral-800 bg-black/95 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center">
-          {/* TODO: Replace with your logo */}
-          <Image
-            src="/images/logo.png"
-            alt={siteConfig.name}
-            width={160}
-            height={93}
-            className="h-14 w-auto"
-            priority
-          />
+        <Link href="/" className="flex flex-col leading-tight">
+          <span className="text-lg font-semibold tracking-wide text-white">
+            {siteConfig.shortName}
+          </span>
+          <span className="text-[11px] uppercase tracking-[0.18em] text-neutral-400">
+            Mens Hair Salon
+          </span>
         </Link>
-        <nav className="hidden items-center gap-6 lg:flex">
+
+        <nav className="hidden items-center gap-7 lg:flex">
           {/* Services Dropdown */}
           <div className="group relative">
             <Link
               href={`/services/${serviceCategories[0]?.slug}`}
-              className="flex items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900"
+              className="flex items-center gap-1 text-sm font-medium text-neutral-200 hover:text-white"
             >
               Services
               <svg className="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </Link>
-            <div className="invisible absolute left-0 top-full z-50 w-125 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-              <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-xl">
+            <div className="invisible absolute left-0 top-full z-50 w-136 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+              <div className="rounded-lg border border-neutral-800 bg-neutral-950 p-4 shadow-xl">
                 <div className="grid grid-cols-3 gap-4">
                   {serviceCategories.map((category) => (
                     <div key={category.slug}>
                       <Link
                         href={`/services/${category.slug}`}
-                        className="text-sm font-semibold text-brand-600 hover:text-brand-800"
+                        className="text-sm font-semibold text-white hover:text-neutral-300"
                       >
                         {category.name}
                       </Link>
@@ -66,7 +49,7 @@ export function Header() {
                           <li key={service.slug}>
                             <Link
                               href={`/services/${category.slug}/${service.slug}`}
-                              className="text-sm text-brand-500 hover:text-brand-900"
+                              className="text-sm text-neutral-400 hover:text-white"
                             >
                               {service.name}
                             </Link>
@@ -80,35 +63,35 @@ export function Header() {
             </div>
           </div>
 
-          {/* Service Areas Dropdown */}
+          {/* Locations Dropdown */}
           <div className="group relative">
             <Link
               href="/locations"
-              className="flex items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900"
+              className="flex items-center gap-1 text-sm font-medium text-neutral-200 hover:text-white"
             >
-              Service Areas
+              Areas
               <svg className="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </Link>
-            <div className="invisible absolute left-0 top-full z-50 w-48 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-              <div className="rounded-lg border border-gray-200 bg-white p-2 shadow-xl">
+            <div className="invisible absolute left-0 top-full z-50 w-56 pt-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+              <div className="rounded-lg border border-neutral-800 bg-neutral-950 p-2 shadow-xl">
                 <ul className="space-y-1">
                   {popularLocations.map((location) => (
                     <li key={location.slug}>
                       <Link
                         href={`/locations/${location.slug}`}
-                        className="block rounded px-3 py-2 text-sm text-brand-600 hover:bg-brand-50 hover:text-brand-900"
+                        className="block rounded px-3 py-2 text-sm text-neutral-300 hover:bg-neutral-900 hover:text-white"
                       >
                         {location.name}
                       </Link>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-2 border-t border-gray-200 pt-2">
+                <div className="mt-2 border-t border-neutral-800 pt-2">
                   <Link
                     href="/locations"
-                    className="block rounded px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50"
+                    className="block rounded px-3 py-2 text-sm font-medium text-white hover:bg-neutral-900"
                   >
                     View all areas
                   </Link>
@@ -117,31 +100,28 @@ export function Header() {
             </div>
           </div>
 
-          <Link href="/resources" className="text-sm font-medium text-brand-700 hover:text-brand-900">
+          <Link href="/resources" className="text-sm font-medium text-neutral-200 hover:text-white">
             Resources
           </Link>
-          <Link href="/blog" className="text-sm font-medium text-brand-700 hover:text-brand-900">
+          <Link href="/blog" className="text-sm font-medium text-neutral-200 hover:text-white">
             Blog
           </Link>
-          <Link href="/about" className="text-sm font-medium text-brand-700 hover:text-brand-900">
+          <Link href="/about" className="text-sm font-medium text-neutral-200 hover:text-white">
             About
           </Link>
-        </nav>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/free-estimate"
-            className="rounded-lg bg-accent-500 px-4 py-2 text-sm font-semibold text-brand-900 transition-colors hover:bg-accent-600"
-          >
-            Free Estimate
+          <Link href="/contact" className="text-sm font-medium text-neutral-200 hover:text-white">
+            Visit
           </Link>
-          <a
-            href={caseyConfig.phoneHref}
-            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
-          >
-            {caseyConfig.phone}
-          </a>
-        </div>
-      </div>
+        </nav>
+
+        <a
+          href={caseyConfig.bookingUrl}
+          target="_blank"
+          rel="noopener"
+          className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-neutral-200"
+        >
+          Book Now
+        </a>
       </div>
     </header>
   );

@@ -55,12 +55,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/resources`, lastModified: getGitDate('app/(site)/resources/page.tsx'), changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/blog`, lastModified: getGitDate('app/(site)/blog/page.tsx'), changeFrequency: 'weekly', priority: 0.7 },
     {
-      url: `${baseUrl}/free-estimate`,
-      lastModified: getGitDate('app/(site)/free-estimate/page.tsx'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
       url: `${baseUrl}/privacy`,
       lastModified: getGitDate('app/(site)/privacy/page.tsx'),
       changeFrequency: 'yearly',

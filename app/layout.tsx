@@ -5,7 +5,7 @@ import { AnalyticsEvents, Header, Footer } from '@/components';
 import { siteConfig } from '@/lib/config';
 import './globals.css';
 
-// TODO: Replace with your GA4 Measurement ID
+// TODO: Replace with the GA4 Measurement ID once provisioned.
 const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
 
 const inter = Inter({
@@ -15,15 +15,23 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} - Professional ${siteConfig.vertical} in ${siteConfig.city}, ${siteConfig.stateAbbr}`,
+    default: `${siteConfig.name} | Men’s Hair Salon in ${siteConfig.neighborhood}, ${siteConfig.stateAbbr}`,
     template: `%s | ${siteConfig.shortName}`,
   },
   description: siteConfig.description,
+  metadataBase: new URL(siteConfig.url),
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: siteConfig.url,
     siteName: siteConfig.name,
+    title: `${siteConfig.name} | Men’s Hair Salon in ${siteConfig.neighborhood}, ${siteConfig.stateAbbr}`,
+    description: siteConfig.description,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.name,
+    description: siteConfig.description,
   },
 };
 
@@ -37,7 +45,7 @@ export default function RootLayout({
       <head>
         <link rel="llms-txt" href="/llms.txt" />
       </head>
-      {process.env.NODE_ENV === 'production' && (
+      {process.env.NODE_ENV === 'production' && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX' && (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
@@ -54,7 +62,7 @@ export default function RootLayout({
           <AnalyticsEvents />
         </>
       )}
-      <body className={`${inter.className} antialiased bg-white`}>
+      <body className={`${inter.className} antialiased bg-black text-neutral-100`}>
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">{children}</main>

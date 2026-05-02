@@ -1,14 +1,14 @@
-import { categoryOneServices } from './category-one';
-import { categoryTwoServices } from './category-two';
-import { categoryThreeServices } from './category-three';
+import { haircutServices } from './category-one';
+import { beardServices } from './category-two';
+import { specialtyServices } from './category-three';
 import type { ServicePage } from './types';
 
 export * from './types';
 
 export const allServices: ServicePage[] = [
-  ...categoryOneServices,
-  ...categoryTwoServices,
-  ...categoryThreeServices,
+  ...haircutServices,
+  ...beardServices,
+  ...specialtyServices,
 ];
 
 export function getServiceBySlug(slug: string): ServicePage | undefined {
@@ -34,4 +34,4 @@ export function getServicesByCategory(category: string): ServicePage[] {
   return allServices.filter((s) => s.category === category);
 }
 
-export { categoryOneServices, categoryTwoServices, categoryThreeServices };
+export { haircutServices, beardServices, specialtyServices };

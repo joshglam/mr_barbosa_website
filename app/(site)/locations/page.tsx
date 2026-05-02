@@ -1,28 +1,36 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { siteConfig, caseyConfig } from '@/lib/config';
 import { locations } from '@/lib/locations';
+import { heroImage } from '@/lib/images';
 
 export const metadata: Metadata = {
-  title: 'Service Areas',
-  description: `${siteConfig.name} provides professional ${siteConfig.vertical} services in ${siteConfig.city} and surrounding areas. Find your area and get started today.`,
+  title: 'Areas We Serve',
+  description: `${siteConfig.name} serves Chelsea and the surrounding NYC neighborhoods. Find your area and book online.`,
 };
 
 export default function LocationsPage() {
   return (
-    <div className="bg-white">
-      {/* Hero */}
-      <section className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-brand-800" />
+    <div className="bg-black">
+      <section className="relative overflow-hidden border-b border-neutral-800 py-24 sm:py-32">
+        <Image
+          src={heroImage('locations')}
+          alt="Chelsea / Flatiron, NYC"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-black/70" />
         <div className="relative mx-auto max-w-5xl px-4 text-center">
-          <h1 className="text-4xl font-bold text-white">Service Areas</h1>
-          <p className="mt-4 text-lg text-brand-100">
-            Professional {siteConfig.vertical} throughout {siteConfig.city} and surrounding areas
+          <h1 className="text-4xl font-bold text-white">Areas We Serve</h1>
+          <p className="mt-4 text-lg text-neutral-200">
+            Mr. Barbosa is based on the Chelsea / Flatiron border — clients walk and train in from across Manhattan.
           </p>
         </div>
       </section>
 
-      {/* Locations Grid */}
       <section className="py-16">
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -30,14 +38,14 @@ export default function LocationsPage() {
               <Link
                 key={location.slug}
                 href={`/locations/${location.slug}`}
-                className="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-brand-300 hover:shadow-md"
+                className="group rounded-lg border border-neutral-800 bg-neutral-950 p-6 transition-all hover:border-white"
               >
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900 group-hover:text-brand-600">
+                  <h2 className="text-lg font-semibold text-white">
                     {location.name}
                   </h2>
                   <svg
-                    className="h-5 w-5 text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-brand-600"
+                    className="h-5 w-5 text-neutral-500 transition-transform group-hover:translate-x-1 group-hover:text-white"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -46,8 +54,8 @@ export default function LocationsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
-                <p className="mt-1 text-sm text-gray-500">{location.county}</p>
-                <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                <p className="mt-1 text-sm text-neutral-500">{location.county}</p>
+                <p className="mt-2 text-sm text-neutral-400 line-clamp-3">
                   {location.description}
                 </p>
               </Link>
@@ -56,20 +64,20 @@ export default function LocationsPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-gray-50 py-16">
+      <section className="border-t border-neutral-800 bg-neutral-950 py-16">
         <div className="mx-auto max-w-3xl px-4 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Don&apos;t See Your City?</h2>
-          <p className="mt-4 text-gray-600">
-            We serve many additional areas around {siteConfig.city}, {siteConfig.state}.
-            Call us to confirm service availability in your area.
+          <h2 className="text-2xl font-bold text-white">Ready when you are</h2>
+          <p className="mt-4 text-neutral-300">
+            Book online any time — instant confirmation.
           </p>
           <div className="mt-6">
             <a
-              href={caseyConfig.phoneHref}
-              className="inline-block rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white shadow-lg transition-colors hover:bg-brand-700"
+              href={caseyConfig.bookingUrl}
+              target="_blank"
+              rel="noopener"
+              className="inline-block rounded-lg bg-white px-6 py-3 font-semibold text-black transition-colors hover:bg-neutral-200"
             >
-              Call {caseyConfig.phone}
+              Book Now
             </a>
           </div>
         </div>

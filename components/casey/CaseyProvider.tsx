@@ -103,12 +103,7 @@ export function CaseyProvider({ children }: { children: ReactNode }) {
     async (details: string) => {
       dispatch({ type: 'SUBMIT_DETAILS', payload: details });
       const intake = { ...state.intake, details: details || null };
-      const lines = ['[Form Submission]'];
-      if (intake.category) lines.push(`Category: ${intake.category}`);
-      if (intake.serviceName) lines.push(`Service: ${intake.serviceName}`);
-      if (intake.urgency) lines.push(`Urgency: ${intake.urgency}`);
-      if (intake.details) lines.push(`Additional Details: ${intake.details}`);
-      const initialMessage = lines.join('\n');
+      const initialMessage = intake.details || 'Hi, I need help.';
       const messages = [
         { id: '', role: 'user' as const, content: initialMessage, timestamp: Date.now() },
       ];

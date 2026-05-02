@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { trackPhoneClick, trackEmailClick, trackCTAClick } from '@/lib/analytics';
+import { trackCTAClick } from '@/lib/analytics';
 
 export function AnalyticsEvents() {
   useEffect(() => {
@@ -9,15 +9,7 @@ export function AnalyticsEvents() {
       const link = (e.target as HTMLElement).closest('a');
       if (!link?.href) return;
 
-      if (link.href.startsWith('tel:')) {
-        trackPhoneClick();
-      } else if (link.href.startsWith('mailto:')) {
-        trackEmailClick();
-      } else if (
-        link.getAttribute('href') === '/free-estimate' ||
-        link.textContent?.toLowerCase().includes('free estimate') ||
-        link.textContent?.toLowerCase().includes('request estimate')
-      ) {
+      if (link.href.includes('vagaro.com/mrbarbosa')) {
         const section = link.closest('section, header, footer, nav');
         let location = 'unknown';
         if (section) {
@@ -30,9 +22,9 @@ export function AnalyticsEvents() {
             const heading = section.querySelector('h1, h2');
             if (heading) {
               const text = heading.textContent?.toLowerCase() ?? '';
-              if (text.includes('ready to get started')) {
+              if (text.includes('ready')) {
                 location = 'bottom_cta';
-              } else if (text.includes('hero') || section.querySelector('video')) {
+              } else if (text.includes('crafting') || text.includes('hero')) {
                 location = 'hero';
               } else {
                 location = 'section';
@@ -41,7 +33,7 @@ export function AnalyticsEvents() {
           }
         }
 
-        trackCTAClick('free_estimate', location);
+        trackCTAClick('book_now', location);
       }
     }
 

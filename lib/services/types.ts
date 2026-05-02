@@ -22,37 +22,29 @@ export interface ServiceCategory {
 }
 
 // ============================================================================
-// SERVICE CATEGORIES — Define your business's service categories here.
-// Each category gets its own landing page at /services/[category-slug]
-// and can contain multiple individual service pages.
-//
-// Examples by vertical:
-//   Roofing:     residential, commercial, repairs
-//   Plumbing:    residential, commercial, emergency
-//   Landscaping: design, maintenance, hardscaping
-//   HVAC:        installation, repair, maintenance
-//   Painting:    interior, exterior, commercial
+// SERVICE CATEGORIES — Mr. Barbosa Mens Hair Salon
+// Each category gets a landing page at /services/[category-slug]
 // ============================================================================
 export const serviceCategories: ServiceCategory[] = [
   {
-    slug: 'category-one',
-    name: 'Category One',
-    description: 'Description of your first service category',
-    icon: 'hammer',
-    color: 'blue',
+    slug: 'haircuts',
+    name: 'Haircuts',
+    description: 'Precision men’s and kids haircuts tailored to your face shape and lifestyle.',
+    icon: 'scissors',
+    color: 'white',
   },
   {
-    slug: 'category-two',
-    name: 'Category Two',
-    description: 'Description of your second service category',
-    icon: 'paintbrush',
-    color: 'green',
+    slug: 'beard',
+    name: 'Beard Services',
+    description: 'Classic beard trims and grooming using scissors for natural, refined results.',
+    icon: 'razor',
+    color: 'white',
   },
   {
-    slug: 'category-three',
-    name: 'Category Three',
-    description: 'Description of your third service category',
-    icon: 'wrench',
-    color: 'orange',
+    slug: 'specialty',
+    name: 'Specialty',
+    description: 'Add-on services to round out your visit — relaxation and detail work.',
+    icon: 'spa',
+    color: 'white',
   },
 ];

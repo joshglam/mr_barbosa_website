@@ -1,46 +1,16 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { siteConfig, caseyConfig } from '@/lib/config';
-import { serviceCategories } from '@/lib/services';
+import { serviceCategories, allServices } from '@/lib/services';
+import { heroImage, serviceImage } from '@/lib/images';
 
 export const metadata: Metadata = {
   title: {
-    absolute: `${siteConfig.shortName} | Professional ${siteConfig.vertical} in ${siteConfig.city}, ${siteConfig.stateAbbr}`,
+    absolute: `${siteConfig.shortName} | Men’s Hair Salon in Chelsea & Flatiron, ${siteConfig.stateAbbr}`,
   },
   description: siteConfig.description,
 };
-
-// TODO: Replace with icons relevant to your service categories
-const categoryIcons: Record<string, React.ReactNode> = {
-  'category-one': (
-    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" />
-    </svg>
-  ),
-  'category-two': (
-    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
-    </svg>
-  ),
-  'category-three': (
-    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75a4.5 4.5 0 0 1-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 1 1-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 0 1 6.336-4.486l-3.276 3.276a3.004 3.004 0 0 0 2.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852Z" />
-    </svg>
-  ),
-};
-
-// TODO: Replace with your trust points
-const trustPoints = [
-  { label: '100% Local', icon: '\u2713' },
-  { label: 'Family Business', icon: '\u2713' },
-  { label: `${new Date().getFullYear() - (siteConfig.established ?? 2020)}+ Years Experience`, icon: '\u2605' },
-  { label: 'Insured & Bonded', icon: '\u2713' },
-];
-
-// TODO: Replace with your service areas
-const serviceAreas = [
-  'Example City',
-];
 
 export default function Home() {
   const localBusinessSchema = {
@@ -48,18 +18,18 @@ export default function Home() {
     '@type': siteConfig.schemaType,
     name: siteConfig.name,
     url: siteConfig.url,
-    telephone: caseyConfig.phone,
     description: siteConfig.description,
-    ...(siteConfig.established && { foundingDate: String(siteConfig.established) }),
-    areaServed: {
-      '@type': 'City',
-      name: siteConfig.city,
-      containedInPlace: {
-        '@type': 'State',
-        name: siteConfig.state,
-      },
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: caseyConfig.address.street,
+      addressLocality: caseyConfig.address.city,
+      addressRegion: caseyConfig.address.state,
+      postalCode: caseyConfig.address.zip,
+      addressCountry: 'US',
     },
-    openingHours: ['Mo-Fr 07:00-18:00', 'Sa-Su 10:00-17:00'],
+    ...(siteConfig.established && { foundingDate: String(siteConfig.established) }),
+    openingHours: ['Tu-Fr 11:00-20:00', 'Sa 11:00-17:00'],
+    sameAs: siteConfig.socialLinks.map((s) => s.url),
   };
 
   return (
@@ -68,161 +38,248 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
-      <div className="bg-white">
-      {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-brand-800" />
-        {/* TODO: Add hero image or video */}
-        <div className="absolute inset-0 bg-brand-900/70" />
-        <div className="relative mx-auto max-w-5xl px-4">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Professional {siteConfig.vertical} Services You Can Rely On
+      <div className="bg-black">
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b border-neutral-800 py-32 sm:py-40">
+          <Image
+            src={heroImage('home')}
+            alt="Inside Mr. Barbosa Mens Hair Salon"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/70" />
+          <div className="relative mx-auto max-w-5xl px-4 text-center">
+            <p className="text-sm font-medium uppercase tracking-[0.3em] text-neutral-300">
+              Chelsea · Flatiron · NYC
+            </p>
+            <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Crafting excellence in every cut.
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-brand-100">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-neutral-200">
               {siteConfig.description}
             </p>
-            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <a
-                href={caseyConfig.phoneHref}
-                className="inline-block rounded-lg bg-accent-500 px-8 py-4 text-lg font-semibold text-brand-900 shadow-lg transition-all hover:bg-accent-600 hover:scale-105"
+                href={caseyConfig.bookingUrl}
+                target="_blank"
+                rel="noopener"
+                className="inline-block rounded-lg bg-white px-8 py-4 text-lg font-semibold text-black shadow-lg transition-all hover:bg-neutral-200"
               >
-                Call {caseyConfig.phone}
+                Book Now
               </a>
               <Link
-                href="/free-estimate"
-                className="inline-block rounded-lg border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-brand-900"
+                href="/services/haircuts"
+                className="inline-block rounded-lg border border-white px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-black"
               >
-                Request Estimate Online
+                View Services
               </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Trust Bar */}
-      <section className="border-b border-gray-200 bg-gray-50 py-4">
-        <div className="mx-auto max-w-5xl px-4">
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
-            {trustPoints.map((point) => (
-              <div key={point.label} className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-100 text-xs text-brand-700">
-                  {point.icon}
-                </span>
-                {point.label}
+        {/* Trust Bar */}
+        <section className="border-b border-neutral-800 bg-neutral-950 py-6">
+          <div className="mx-auto max-w-5xl px-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-sm text-neutral-300">
+              <span className="flex items-center gap-2">
+                <span className="text-white">✦</span>
+                One-on-one studio
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-white">✦</span>
+                {new Date().getFullYear() - (siteConfig.established ?? 2014)}+ years experience
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-white">✦</span>
+                Chelsea / Flatiron, Manhattan
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-white">✦</span>
+                Online booking
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* Service Categories */}
+        <section className="py-20">
+          <div className="mx-auto max-w-5xl px-4">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-white">Our Services</h2>
+              <p className="mt-3 text-neutral-400">
+                Precision cuts, classic beard work, and a calm space to enjoy them in.
+              </p>
+            </div>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {serviceCategories.map((category) => (
+                <Link
+                  key={category.slug}
+                  href={`/services/${category.slug}`}
+                  className="group flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 transition-all hover:border-white"
+                >
+                  <div className="relative aspect-16/10 overflow-hidden">
+                    <Image
+                      src={heroImage(category.slug)}
+                      alt={category.name}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="text-xl font-semibold text-white">{category.name}</h3>
+                    <p className="mt-3 flex-1 text-sm text-neutral-400">{category.description}</p>
+                    <span className="mt-6 inline-flex items-center text-sm font-semibold text-white">
+                      Explore
+                      <svg className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* All Services List */}
+        <section className="border-t border-neutral-800 bg-neutral-950 py-20">
+          <div className="mx-auto max-w-5xl px-4">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-white">The Full Menu</h2>
+              <p className="mt-3 text-neutral-400">
+                Every service is by appointment in a calm, one-chair studio.
+              </p>
+            </div>
+            <ul className="mx-auto mt-12 max-w-3xl divide-y divide-neutral-800 border-t border-b border-neutral-800">
+              {allServices.map((service) => (
+                <li key={service.slug}>
+                  <Link
+                    href={`/services/${service.category}/${service.slug}`}
+                    className="group flex items-center gap-5 py-5 transition-colors hover:bg-black"
+                  >
+                    <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-md border border-neutral-800">
+                      <Image
+                        src={serviceImage(service.slug)}
+                        alt={service.name}
+                        fill
+                        sizes="96px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-white">{service.name}</p>
+                      <p className="mt-1 text-sm text-neutral-400">{service.hero.subtitle}</p>
+                    </div>
+                    <span className="text-sm font-medium text-neutral-300 group-hover:text-white">
+                      Details →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-12 text-center">
+              <a
+                href={caseyConfig.bookingUrl}
+                target="_blank"
+                rel="noopener"
+                className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-black transition-colors hover:bg-neutral-200"
+              >
+                Book Now
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* About / Why */}
+        <section className="py-20">
+          <div className="mx-auto max-w-3xl px-4 text-center">
+            <h2 className="text-3xl font-bold text-white">A different kind of chair.</h2>
+            <p className="mt-6 text-lg text-neutral-300">
+              Mr. Barbosa is a one-on-one men’s grooming studio. No noisy floor of clippers,
+              no rushing the cut, no sales pitch. Just a stylist who has spent over a decade
+              perfecting the craft, working through your hair the way it should be worked through.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/about"
+                className="inline-block rounded-lg border border-white px-6 py-3 font-semibold text-white transition-colors hover:bg-white hover:text-black"
+              >
+                About the Studio
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Visit / Address */}
+        <section className="border-t border-neutral-800 bg-neutral-950 py-20">
+          <div className="mx-auto grid max-w-5xl gap-12 px-4 lg:grid-cols-2">
+            <div>
+              <h2 className="text-3xl font-bold text-white">Visit the Studio</h2>
+              <p className="mt-4 text-neutral-300">
+                {caseyConfig.address.street}<br />
+                {caseyConfig.address.city}, {caseyConfig.address.state} {caseyConfig.address.zip}
+              </p>
+              <p className="mt-4 text-sm text-neutral-400">
+                A short walk from the 23rd St 1, F, M, R, and W trains.
+              </p>
+              <div className="mt-6">
+                <a
+                  href={siteConfig.socialLinks.find((s) => s.label === 'Google')?.url ?? '#'}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-block text-sm font-semibold text-white underline-offset-4 hover:underline"
+                >
+                  Open in Google Maps →
+                </a>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Service Categories */}
-      <section className="py-16">
-        <div className="mx-auto max-w-5xl px-4">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Our Services</h2>
-            <p className="mt-2 text-gray-600">
-              Complete {siteConfig.vertical} solutions for your property
-            </p>
-          </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {serviceCategories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/services/${category.slug}`}
-                className="group flex flex-col items-center rounded-xl border border-gray-200 bg-white p-6 text-center transition-all hover:border-brand-300 hover:shadow-lg"
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-100">
-                  {categoryIcons[category.slug]}
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">Hours</h3>
+              <dl className="mt-4 space-y-2 text-sm">
+                <div className="flex justify-between border-b border-neutral-800 pb-2">
+                  <dt className="text-neutral-400">Monday</dt>
+                  <dd className="text-neutral-300">Closed</dd>
                 </div>
-                <h3 className="mt-4 font-semibold text-gray-900 group-hover:text-brand-600">
-                  {category.name}
-                </h3>
-                <p className="mt-1 text-sm text-gray-500">{category.description}</p>
-              </Link>
-            ))}
+                <div className="flex justify-between border-b border-neutral-800 pb-2">
+                  <dt className="text-neutral-400">Tuesday – Friday</dt>
+                  <dd className="text-neutral-300">11:00 AM – 8:00 PM</dd>
+                </div>
+                <div className="flex justify-between border-b border-neutral-800 pb-2">
+                  <dt className="text-neutral-400">Saturday</dt>
+                  <dd className="text-neutral-300">11:00 AM – 5:00 PM</dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt className="text-neutral-400">Sunday</dt>
+                  <dd className="text-neutral-300">Closed</dd>
+                </div>
+              </dl>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Why Us */}
-      <section className="bg-brand-900 py-12">
-        <div className="mx-auto max-w-5xl px-4">
-          <div className="text-center md:text-left">
-            <h2 className="text-3xl font-bold text-white">
-              Why {siteConfig.shortName}?
-            </h2>
-            <p className="mt-3 text-lg text-brand-100">
-              {/* TODO: Write your company story / value proposition */}
-              Established in {siteConfig.established}, {siteConfig.name} has built a reputation
-              on repeat clients and referrals. We take pride in delivering quality craftsmanship,
-              maintaining clean work environments, and communicating clearly from the first estimate
-              to the final walkthrough.
+        {/* Bottom CTA */}
+        <section className="py-24">
+          <div className="mx-auto max-w-3xl px-4 text-center">
+            <h2 className="text-3xl font-bold text-white">Ready for the chair?</h2>
+            <p className="mt-4 text-neutral-300">
+              Reserve your appointment online — instant confirmation.
             </p>
-            <div className="mt-8 text-center md:text-left">
+            <div className="mt-8">
               <a
-                href={caseyConfig.phoneHref}
-                className="inline-block rounded-lg bg-accent-500 px-8 py-3 font-semibold text-brand-900 shadow-lg transition-all hover:bg-accent-600 hover:scale-105"
+                href={caseyConfig.bookingUrl}
+                target="_blank"
+                rel="noopener"
+                className="inline-block rounded-lg bg-white px-8 py-4 text-lg font-semibold text-black shadow-lg transition-all hover:bg-neutral-200"
               >
-                Call {caseyConfig.phone}
+                Book Now
               </a>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Service Area Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="mx-auto max-w-5xl px-4">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Serving {siteConfig.city} and Surrounding Areas
-            </h2>
-          </div>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {serviceAreas.map((area) => (
-              <Link
-                key={area}
-                href={`/locations/${area.toLowerCase().replace(' ', '-')}`}
-                className="rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm border border-gray-200 hover:border-brand-300 hover:text-brand-600 transition-colors"
-              >
-                {area}
-              </Link>
-            ))}
-          </div>
-          <div className="mt-6 text-center">
-            <Link href="/locations" className="text-sm font-semibold text-brand-600 hover:text-brand-700">
-              View all service areas
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Bottom CTA */}
-      <section className="bg-gray-900 py-16">
-        <div className="mx-auto max-w-3xl px-4 text-center">
-          <h2 className="text-3xl font-bold text-white">
-            Ready to Get Started?
-          </h2>
-          <p className="mt-4 text-lg text-gray-300">
-            Call for a free estimate. No obligation, no pressure.
-          </p>
-          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <a
-              href={caseyConfig.phoneHref}
-              className="inline-block rounded-lg bg-brand-500 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all hover:bg-brand-600 hover:scale-105"
-            >
-              Call {caseyConfig.phone}
-            </a>
-            <Link
-              href="/free-estimate"
-              className="inline-block rounded-lg border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white hover:text-brand-900"
-            >
-              Request Estimate Online
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
       </div>
     </>
   );

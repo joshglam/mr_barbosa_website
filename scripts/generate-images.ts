@@ -4,8 +4,9 @@
  * Usage:
  *   GOOGLE_AI_API_KEY=... npx tsx scripts/generate-images.ts
  *
- * Reads siteConfig and service data to auto-generate SEO-friendly images
- * for every page that needs one. Skips images that already exist.
+ * Prompts are tuned for a high-end, one-on-one men's hair salon.
+ * Aesthetic: editorial, moody, dark/luxury, GQ-style. No families,
+ * no bright suburban scenes, no contractor imagery.
  */
 
 import fs from 'fs';
@@ -50,19 +51,16 @@ function loadServices(): { categories: string[]; services: ServiceInfo[] } {
   const typesPath = path.join(process.cwd(), 'lib', 'services', 'types.ts');
   const src = fs.readFileSync(typesPath, 'utf-8');
 
-  // Extract category slugs
   const categorySlugs: string[] = [];
   const slugRe = /slug:\s*'([^']+)'/g;
   let m;
   while ((m = slugRe.exec(src)) !== null) categorySlugs.push(m[1]);
 
-  // Load services from each category file
   const services: ServiceInfo[] = [];
   const servicesDir = path.join(process.cwd(), 'lib', 'services');
   for (const file of fs.readdirSync(servicesDir)) {
     if (file === 'types.ts' || file === 'index.ts' || !file.endsWith('.ts')) continue;
     const fileSrc = fs.readFileSync(path.join(servicesDir, file), 'utf-8');
-    // Extract slug, name, category from each service object
     const serviceRe = /slug:\s*'([^']+)'[\s\S]*?name:\s*'([^']+)'[\s\S]*?category:\s*'([^']+)'/g;
     let sm;
     while ((sm = serviceRe.exec(fileSrc)) !== null) {
@@ -74,7 +72,7 @@ function loadServices(): { categories: string[]; services: ServiceInfo[] } {
 }
 
 // ---------------------------------------------------------------------------
-// Build image specs dynamically from config
+// Build image specs — luxury men's salon aesthetic
 // ---------------------------------------------------------------------------
 
 interface ImageSpec {
@@ -82,59 +80,103 @@ interface ImageSpec {
   prompt: string;
 }
 
-function slugify(text: string): string {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
+// Shared style modifiers applied to every prompt to keep the look consistent.
+const STYLE = `
+Editorial fashion photography, high-end men's grooming aesthetic.
+Mood: dark, moody, sophisticated, GQ / Esquire style.
+Lighting: dramatic single-source lighting, warm rim light, deep shadows.
+Color palette: deep blacks, charcoal, warm browns, brass, soft warm whites.
+Composition: clean, intentional negative space, shallow depth of field.
+Subject: an adult man (not a teenager, not elderly) in a one-on-one upscale men's hair studio.
+Setting: a single-chair, intimate Manhattan men's studio — dark walls, vintage barber chair, brass fixtures, leather, dark wood, framed art.
+Avoid: bright suburban scenes, families, kitchens, multiple chairs, busy salons, women, children, signage, watermarks, logos, text in the image.
+Photorealistic, sharp focus, shot on a 50mm lens, f/2.0.
+`.trim().replace(/\s+/g, ' ');
+
+const SERVICE_PROMPTS: Record<string, string> = {
+  'mens-haircut':
+    'A close-up portrait of a stylish man in a vintage leather barber chair receiving a precision men\'s haircut from a male stylist holding scissors and a comb. Reflection visible in a backlit mirror behind. Dark sophisticated salon interior.',
+  'buzz-cut':
+    'A close-up of a male stylist running professional clippers through a man\'s short hair, creating a clean buzz cut. Hand of stylist visible holding the clippers. Side profile of the seated client. Dark moody salon background.',
+  'kids-haircut':
+    'A young boy (around 7 years old) seated calmly in a leather barber chair receiving a haircut from a male stylist. Soft warm light, intimate, unrushed. Dark sophisticated salon interior in the background.',
+  'classic-beard-trim':
+    'A close-up of a male stylist using barber scissors to shape a well-groomed beard on a confident adult male client. Detail of scissors against beard, sharp focus. Warm rim light. Dark moody background.',
+  'haircut-and-beard-trim':
+    'A confident adult man in a vintage leather barber chair, mid-service, with both freshly cut hair and a sharp groomed beard. A male stylist stands behind with scissors. Warm dramatic lighting, dark sophisticated salon.',
+  'scalp-and-neck-massage':
+    'A male stylist\'s hands gently performing a scalp massage on a relaxed seated male client with eyes closed. Soft warm light, intimate, calm. Dark sophisticated salon background.',
+};
+
+const CATEGORY_PROMPTS: Record<string, string> = {
+  haircuts:
+    'A wide editorial shot of a vintage leather barber chair under a brass pendant light in an upscale men\'s hair studio. Tools (scissors, combs, brush) arranged neatly on a dark wood counter. Empty chair, ready for the next client. Cinematic moody lighting.',
+  beard:
+    'A flat-lay overhead editorial photograph of premium men\'s beard grooming tools — barber scissors, a fine-tooth comb, beard oil in an apothecary bottle, a folded white towel — arranged on a dark walnut surface. Warm directional light from one side.',
+  specialty:
+    'A close-up editorial photograph of a male client reclined in a vintage leather barber chair, eyes closed, with a warm towel draped across his neck. Soft amber light, deeply relaxing mood, dark sophisticated salon background.',
+};
 
 function buildImageSpecs(
-  config: ReturnType<typeof loadSiteConfig>,
+  _config: ReturnType<typeof loadSiteConfig>,
   categories: string[],
   services: ServiceInfo[],
 ): ImageSpec[] {
-  const vertical = config.vertical;
-  const city = config.city;
-  const citySlug = slugify(city);
-  const verticalSlug = slugify(vertical);
-
   const specs: ImageSpec[] = [];
 
   // --- Page heroes ---
   specs.push({
-    filename: `about-${slugify(config.shortName)}-${citySlug}.jpg`,
-    prompt: `Professional photograph of a bright, clean, modern home interior with natural sunlight, representing a professional ${vertical} business in ${city}, ${config.stateAbbr}, editorial interior photography, warm and inviting atmosphere`,
+    filename: 'hero-home.jpg',
+    prompt:
+      'A wide editorial photograph of an upscale one-chair men\'s hair studio interior — a single vintage leather barber chair facing a large mirror, brass pendant light overhead, dark walls, dark wood counter with neatly arranged scissors and combs. Empty chair, no people. Cinematic, moody, magazine cover quality. ' +
+      STYLE,
   });
 
   specs.push({
-    filename: `${verticalSlug}-tips-blog-${citySlug}.jpg`,
-    prompt: `Professional photograph representing a ${vertical} blog, neatly arranged supplies and tools of the trade on a clean surface, bright natural light, clean minimalist aesthetic, editorial product photography`,
+    filename: 'hero-about.jpg',
+    prompt:
+      'A moody editorial portrait scene of an empty vintage leather barber chair in a sophisticated men\'s hair studio, with framed black and white photographs and dark walnut shelves of pomade and grooming products in the background. Warm directional light from one side, deep shadows on the other. ' +
+      STYLE,
   });
 
   specs.push({
-    filename: `${verticalSlug}-resources-guide-${citySlug}.jpg`,
-    prompt: `Professional photograph of a homeowner reviewing a ${vertical} pricing guide at a clean kitchen counter, bright modern home in background, natural light, warm tones, lifestyle editorial photography`,
+    filename: 'hero-blog.jpg',
+    prompt:
+      'A flat-lay overhead editorial photograph of premium men\'s grooming tools on a dark walnut surface — vintage barber scissors, a comb, a small leather notebook, an apothecary bottle of beard oil, a folded white linen towel. Single warm directional light. ' +
+      STYLE,
   });
 
   specs.push({
-    filename: `${verticalSlug}-service-${citySlug}-neighborhood.jpg`,
-    prompt: `Professional photograph of a beautiful tree-lined residential street in ${city} ${config.state}, well-maintained suburban homes with green lawns, clear blue sky, warm golden hour lighting, real estate editorial photography`,
+    filename: 'hero-resources.jpg',
+    prompt:
+      'A clean editorial close-up of a hand-bound leather notebook, a fountain pen, and a vintage straight razor laid out on a dark walnut counter in an upscale men\'s hair studio. Deeply moody, single warm light source. ' +
+      STYLE,
+  });
+
+  specs.push({
+    filename: 'hero-locations.jpg',
+    prompt:
+      'A moody nighttime editorial photograph of a Chelsea, New York City sidewalk and brick building facade with warm interior light spilling out of a single ground-floor studio window. Dark, atmospheric, cinematic, soft glow. No signage or logos. ' +
+      STYLE,
   });
 
   // --- Category heroes ---
   for (const cat of categories) {
-    const catServices = services.filter((s) => s.category === cat);
-    const serviceNames = catServices.map((s) => s.name).join(', ');
-
+    const prompt = CATEGORY_PROMPTS[cat] ??
+      `An editorial photograph representing ${cat} services in an upscale men's hair studio.`;
     specs.push({
-      filename: `${cat}-${verticalSlug}-service-${citySlug}.jpg`,
-      prompt: `Professional photograph representing ${cat} ${vertical} services (${serviceNames}), a professional at work in a bright modern home, editorial lifestyle photography, warm natural light, ${city} ${config.stateAbbr} suburban setting`,
+      filename: `hero-${cat}.jpg`,
+      prompt: `${prompt} ${STYLE}`,
     });
   }
 
   // --- Individual service images ---
   for (const svc of services) {
+    const prompt = SERVICE_PROMPTS[svc.slug] ??
+      `An editorial photograph representing the "${svc.name}" service in an upscale men's hair studio.`;
     specs.push({
-      filename: `${svc.slug}-${verticalSlug}-service.jpg`,
-      prompt: `Professional photograph representing "${svc.name}" service, a ${vertical} professional performing ${svc.name.toLowerCase()} in a bright modern home, high quality editorial photography, warm natural light, clean and professional setting`,
+      filename: `service-${svc.slug}.jpg`,
+      prompt: `${prompt} ${STYLE}`,
     });
   }
 
@@ -219,8 +261,6 @@ async function main() {
 
   if (missing.length === 0) {
     console.log('All images already exist. Nothing to generate.');
-
-    // Print the filename map for wiring into pages
     console.log('\n--- Image filenames for reference ---');
     images.forEach((img) => console.log(`  ${img.filename}`));
     return;
@@ -233,7 +273,6 @@ async function main() {
     await new Promise((r) => setTimeout(r, 2000));
   }
 
-  // Print the filename map for wiring into pages
   console.log('\n--- Generated image filenames ---');
   images.forEach((img) => console.log(`  ${img.filename}`));
 

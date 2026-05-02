@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { siteConfig, caseyConfig } from '@/lib/config';
+import { siteConfig } from '@/lib/config';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -254,7 +254,6 @@ export default function PrivacyPage() {
           </p>
           <ul>
             <li>Email: {siteConfig.email}</li>
-            <li>Phone: {caseyConfig.phone}</li>
             <li>
               Mail: {siteConfig.name}, {siteConfig.city}, {siteConfig.stateAbbr} (address available upon request)
             </li>

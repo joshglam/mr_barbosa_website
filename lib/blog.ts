@@ -13,30 +13,18 @@ export interface BlogPost {
 }
 
 export const blogCategoryLabels: Record<string, string> = {
-  tips: 'Tips & Advice',
-  projects: 'Project Showcase',
-  news: 'Company News',
+  tips: 'Style Tips',
+  projects: 'Featured Looks',
+  news: 'Studio News',
   seasonal: 'Seasonal',
 };
 
 // ============================================================================
-// HAND-WRITTEN BLOG POSTS — Add your blog content here.
+// HAND-WRITTEN BLOG POSTS
 // Auto-generated posts live in content/blog/*.md and are loaded automatically.
 // ============================================================================
-export const blogPosts: BlogPost[] = [
-  {
-    slug: 'welcome-post',
-    title: 'Welcome to Our Blog',
-    excerpt: 'We are excited to share tips, project showcases, and news with our community.',
-    content: `<h2>Welcome</h2>
-<p>We are excited to launch our blog where we will share helpful tips, project showcases, and company news. Stay tuned for regular updates.</p>`,
-    category: 'news',
-    publishedAt: '2026-01-01',
-    readTime: '1 min',
-  },
-];
+export const blogPosts: BlogPost[] = [];
 
-// Merge hand-written posts with auto-generated markdown files, sorted newest first
 export function getAllBlogPosts(): BlogPost[] {
   const generated = loadMarkdownFiles<BlogPost>('content/blog');
   return [...blogPosts, ...generated].sort(
