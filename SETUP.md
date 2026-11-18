@@ -113,51 +113,15 @@ Include:
 
 See the a-better-website's `public/llms.txt` for a complete example. This file is what AI models read when someone asks "what's a good [your vertical] company in [your city]?"
 
-## Auto-Generated Content
+## Blog and Resource Content
 
-This template includes a GitHub Actions workflow that auto-generates blog posts and resource articles weekly using Claude AI.
+The blog and resources pages merge two sources:
+- Posts in `lib/blog.ts` and `lib/resources.ts`.
+- Markdown files with YAML frontmatter in `content/blog/*.md` and `content/resources/*.md`.
 
-### How It Works
+Both sources are sorted by date (newest first) and look the same on the site.
 
-1. A GitHub Action runs on a cron schedule (Mondays at 10:00 UTC)
-2. It runs `scripts/generate-content.ts` which:
-   - Reads your site config (business name, location, vertical, services)
-   - Scans existing content to avoid duplicate topics
-   - Asks Claude to pick a relevant topic (alternating blog/resource)
-   - Generates a full markdown article with YAML frontmatter
-   - Writes the `.md` file to `content/blog/` or `content/resources/`
-3. The Action commits and pushes the new file
-4. Vercel auto-deploys with the new content
-
-### Setup
-
-1. **Add your Anthropic API key as a GitHub repo secret:**
-   - Go to your repo → Settings → Secrets and variables → Actions
-   - Add a secret named `ANTHROPIC_API_KEY` with your API key
-
-2. **That's it.** The workflow is already configured in `.github/workflows/generate-content.yml`
-
-### Manual Trigger
-
-You can also trigger content generation manually:
-- Go to your repo → Actions → "Generate Content" → Run workflow
-
-### Content Format
-
-Generated articles are markdown files with YAML frontmatter:
-
-```markdown
----
-slug: spring-painting-tips
-title: "Spring Painting Tips for Homeowners"
-excerpt: "Expert tips for scheduling your painting project..."
-category: seasonal
-publishedAt: "2026-04-07"
-readTime: "5 min"
-faqs:
-  - question: "When should I paint my exterior?"
-    answer: "The ideal window is May through early October..."
----
+Write and review each post by hand. The site has no automatic posting job. The weekly Claude job was removed on 2026-11-18, because it published posts with no review and with prices and facts that the model guessed.
 
 ## Article content in markdown...
 ```
@@ -187,9 +151,9 @@ app/                    # Next.js App Router pages
     resources/          # Resource guides (dynamic routes)
 components/             # Shared UI components
   casey/                # Casey AI chat widget
-content/                # Auto-generated content (markdown files)
-  blog/                 # Generated blog posts (.md with YAML frontmatter)
-  resources/            # Generated resource guides (.md with YAML frontmatter)
+content/                # Markdown posts (written by hand)
+  blog/                 # Blog posts (.md with YAML frontmatter)
+  resources/            # Resource guides (.md with YAML frontmatter)
 lib/                    # Data layer & business logic
   services/             # Service data (one file per category)
   casey/                # Chat widget state & API
@@ -200,11 +164,8 @@ lib/                    # Data layer & business logic
   resources.ts          # Resource/guide data (hand-written + loads content/resources/*.md)
   analytics.ts          # GA4 event tracking
 scripts/                # Automation scripts
-  generate-content.ts   # Claude AI content generation (called by GitHub Action)
 types/                  # TypeScript interfaces
 public/images/          # Static assets
-.github/workflows/      # GitHub Actions
-  generate-content.yml  # Weekly content generation cron
 ```
 
 ## Tech Stack
