@@ -123,23 +123,6 @@ Both sources are sorted by date (newest first) and look the same on the site.
 
 Write and review each post by hand. The site has no automatic posting job. The weekly Claude job was removed on 2026-11-18, because it published posts with no review and with prices and facts that the model guessed.
 
-## Article content in markdown...
-```
-
-### Content Sources
-
-The blog and resources pages merge two sources:
-- **Hand-written posts** in `lib/blog.ts` and `lib/resources.ts` (your manually crafted content)
-- **Auto-generated posts** in `content/blog/*.md` and `content/resources/*.md`
-
-Both are sorted by date (newest first) and rendered identically.
-
-### Customization
-
-- Edit the cron schedule in `.github/workflows/generate-content.yml`
-- The generation script reads your `lib/config.ts` and service categories automatically
-- No per-site prompt customization is needed — the script adapts to your config
-
 ## Architecture
 
 ```
